@@ -1,5 +1,6 @@
 "use client"
 import { signIn } from "next-auth/react";
+import { Ruthie } from "next/font/google";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -31,10 +32,10 @@ export default function Home() {
         {/* 6. Sign In Button: Prominent, high-contrast, and "floating" */}
         <div className="mt-20"> {/* Add extra vertical space to separate from the text block */}
             <button onClick={()=>{
-             signIn();
+              router.push("/signup");
             }}
              className="px-10 py-4 text-lg font-semibold text-white bg-indigo-600 rounded-xl shadow-2xl shadow-indigo-500/50 hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-70">
-              Sign In
+             Get Started
             </button>
         </div>
 

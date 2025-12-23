@@ -1,3 +1,5 @@
+'use client'
+
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
@@ -14,14 +16,12 @@ function Sidebar({
 }) {
     // Define a modern accent color (e.g., a vibrant blue)
     const ACCENT_COLOR_CLASSES = 'text-indigo-400';
-    const HOVER_BG_CLASSES = 'hover:bg-gray-700/50'; // Slight hover tint
-    const ACTIVE_BG_CLASSES = 'bg-gray-700 shadow-inner border-l-4 border-indigo-500'; // Active state styling
+    const HOVER_BG_CLASSES = 'hover:bg-gray-700/50'; 
+    const ACTIVE_BG_CLASSES = 'bg-gray-700 shadow-inner border-l-4 border-indigo-500'; 
     const { data: session, status } = useSession();
-    
 
     const navigation = [
         { name: "Dashboard", href: "/dashboard", icon: FiBarChart2 },
-        // Changed '.inventory' to '/inventory' for a valid path structure
         { name: "Inventory", href: "/inventory", icon: PiPackage },
         { name: "Add Product", href: "/add-product", icon: FaPlus },
     ];
@@ -34,7 +34,12 @@ function Sidebar({
     const isActive = (href: string) => currentPath === href;
 
     return (
-        <div className='fixed left-0 top-0 bg-gray-800 text-gray-100 w-64 min-h-screen p-4 sm:p-6 z-10 transition-all duration-300'>
+        // KEY CHANGE HERE: 
+        // Changed 'fixed' to 'sticky'. 
+        // Added 'top-0' and 'h-screen' to make it fill height and stay pinned.
+        // Added 'shrink-0' so it doesn't get squashed.
+        <div className='sticky top-0 left-0 h-screen w-64 bg-gray-800 text-gray-100 p-4 sm:p-6 z-10 transition-all duration-300 shrink-0 flex flex-col'>
+            
             {/* Logo/Header Section */}
             <div className='mb-10 pt-2'>
                 <div className='flex items-center space-x-3'>
@@ -45,8 +50,8 @@ function Sidebar({
                 </div>
             </div>
 
-            {/* Navigation Section */}
-            <nav className='space-y-6'>
+            {/* Navigation Section - Added flex-grow so it pushes footer down naturally */}
+            <nav className='space-y-6 flex-grow'>
                 {/* Main Links */}
                 <div>
                     <div className='text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2'>
@@ -106,40 +111,35 @@ function Sidebar({
                 </div>
             </nav>
 
-     
+            {/* User Profile Section - Changed from absolute to standard flex item to avoid layout breaks */}
+            <div className='border-t border-gray-700 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-4 mt-auto'>
+                <div className='flex items-center justify-between'>
+                    {/* User Info */}
+                    <div className='flex items-center gap-3'>
+                        <div className='w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold'>
+                            {session?.user?.email?.charAt(0).toUpperCase()}
+                        </div>
+                        
+                        <div className='flex flex-col'>
+                            <span className='text-sm font-medium text-white max-w-[100px] truncate'>
+                                {session?.user?.email?.split('@')[0]}
+                            </span>
+                            <span className='text-xs text-gray-400 max-w-[100px] truncate'>
+                                {session?.user?.email}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {/* Sign Out Button */}
+                    <button
+                        onClick={() => signOut({ callbackUrl: '/signin' })}
+                        className='text-gray-400 hover:text-white text-sm whitespace-nowrap'
+                    >
+                        Sign out
+                    </button>
+                </div>
+            </div>
 
-
-<div className='absolute bottom-0 left-0 right-0 border-t border-gray-700'>
-  <div className='flex items-center justify-between p-4'>
-    {/* User Info */}
-    <div className='flex items-center gap-3'>
-      {/* Profile Picture */}
-      <div className='w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold'>
-        {session?.user?.email?.charAt(0).toUpperCase()}
-      </div>
-      
-      {/* Email */}
-      <div className='flex flex-col'>
-        <span className='text-sm font-medium text-white'>
-          {session?.user?.email?.split('@')[0]}
-        </span>
-        <span className='text-xs text-gray-400'>
-          {session?.user?.email}
-        </span>
-      </div>
-    </div>
-    
-    {/* Sign Out Button */}
-    <button
-      onClick={() => signOut({ callbackUrl: '/signin' })}
-      className='text-gray-400 hover:text-white text-sm'
-    >
-      Sign out
-    </button>
-  </div>
-</div>
-
-         
         </div>
     );
 }
